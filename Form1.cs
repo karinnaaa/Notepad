@@ -15,18 +15,18 @@ namespace Notepad
 {
     public partial class Form1 : Form
     {
-        public string _openFile;
-        public string _fileName;
+        public string openFile;
+        public string filename;
         public bool isFileChanged;
         public Form1()
         {
             InitializeComponent();
             Init();
         }
-        public void Init()       
+        public void Init()
         {
-            _fileName = "";
-       
+            filename = "";
+
         }
 
         private void шрифтToolStripMenuItem_Click(object sender, EventArgs e)
@@ -41,7 +41,7 @@ namespace Notepad
         private void создатьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Text = "";
-            _fileName = "";
+            filename = "";
         }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
@@ -51,31 +51,46 @@ namespace Notepad
             if (Fdialog.ShowDialog() == DialogResult.OK)
             {
                 richTextBox1.Text = File.ReadAllText(Fdialog.FileName);
-                _openFile = Fdialog.FileName;
+                openFile = Fdialog.FileName;
             }
         }
 
-        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        private void сохранитьToolStripMenuItem_Click(string _filename)
         {
-            if (_fileName == "")
+            if (_filename == "")
             {
-                if (SaveFileDialog.ShowDialog() == DialogResult.OK)
+                if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    _fileName = SaveFileDialog.FileName;
+                    _filename = saveFileDialog1.FileName;
                 }
             }
             try
             {
-                StreamWriter sw = new StreamWriter(_fileName + ".txt");
+                StreamWriter sw = new StreamWriter(_filename + ".txt");
                 sw.Write(richTextBox1.Text);
                 sw.Close();
                 isFileChanged = false;
                 UpdateTitle();
             }
-            catch 
+            catch
             {
 
                 MessageBox.Show("Невозможно сохраниить файл");
+            }
+        }
+        private void Save(object sender, EventArgs e)
+        {
+            сохранитьToolStripMenuItem_Click(filename);
+        }
+        private void UpdateTitle()
+        {
+            if (filename != "")
+            {
+                this.Text = filename + " -  Блокнот";
+            }
+            else
+            {
+                this.Text = "Безымянный -  Блокнот";
             }
         }
 
@@ -129,7 +144,7 @@ namespace Notepad
         {
             this.Close();
         }
-        
+
         public void CopyText()
         {
             if (richTextBox1.SelectedText.Length != 0)
@@ -165,5 +180,5 @@ namespace Notepad
             PasteText();
         }
     }
-    
+
 }
